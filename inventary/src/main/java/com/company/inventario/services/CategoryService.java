@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+
 @Service
 public class CategoryService implements ICategoryService{
 
@@ -60,6 +62,32 @@ public class CategoryService implements ICategoryService{
 
         } catch (Exception e){
             response.setMetadata("Respuesta no Ok","-1", "Error al consultar por id");
+            e.getStackTrace();
+            return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.OK);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<CategoryResponseRest> save(Category category) {
+
+        CategoryResponseRest response = new CategoryResponseRest();
+        List<Category> list = new ArrayList<>();
+        try {
+            Category categorySaved = categoryDao.save(category);
+            if(categorySaved != null) {
+                list.add(categorySaved);
+                response.getCategoryResponse().setCategory(list);
+                response.setMetadata("Respuesta Ok", "00", "Categoria guardada");
+            } else {
+                response.setMetadata("Respuesta no Ok", "-1", "Categoria no guardada");
+                return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.BAD_REQUEST);
+            }
+
+        } catch (Exception e){
+            response.setMetadata("Respuesta no Ok","-1", "Error al grabar categoria");
             e.getStackTrace();
             return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
