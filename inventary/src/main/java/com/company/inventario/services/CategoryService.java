@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,6 +123,23 @@ public class CategoryService implements ICategoryService{
 
         } catch (Exception e){
             response.setMetadata("Respuesta no Ok","-1", "Error al actualizar la categoria");
+            e.getStackTrace();
+            return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.OK);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<CategoryResponseRest> deleteById(Long id) {
+        CategoryResponseRest response = new CategoryResponseRest();
+
+        try {
+           categoryDao.deleteById(id);
+           response.setMetadata("Respuesta Ok", "00", "Categoria eliminada");
+        } catch (Exception e){
+            response.setMetadata("Respuesta no Ok","-1", "Error al eliminar");
             e.getStackTrace();
             return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
