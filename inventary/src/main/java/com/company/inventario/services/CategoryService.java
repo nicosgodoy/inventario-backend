@@ -1,6 +1,6 @@
 package com.company.inventario.services;
 
-import com.company.inventario.dao.ICategoryDao;
+import com.company.inventario.repository.ICategoryRepository;
 import com.company.inventario.model.Category;
 import com.company.inventario.response.CategoryResponseRest;
 
@@ -9,19 +9,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
-@Service
 public class CategoryService implements ICategoryService{
 
     @Autowired
-    private ICategoryDao categoryDao;
+    private ICategoryRepository categoryDao;
 
     @Override
     @Transactional(readOnly = true)
