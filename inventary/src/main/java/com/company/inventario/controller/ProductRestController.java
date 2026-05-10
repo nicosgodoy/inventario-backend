@@ -86,10 +86,44 @@ public class ProductRestController {
         return response;
     }
 
+    /**
+     * search all products
+     * @return
+     */
     @GetMapping("/products")
     public ResponseEntity<ProductResponseRest> searchAll() {
         ResponseEntity<ProductResponseRest> response = productService.searchAll();
         return response;
     }
+
+    /**
+     * update product by id
+     * @param picture
+     * @param name
+     * @param price
+     * @param account
+     * @param categoriaId
+     * @param id
+     * @return
+     * @throws IOException
+     */
+    @PutMapping ("/products/{id}")
+    public ResponseEntity<ProductResponseRest> updateProduct(
+            @RequestParam("picture") MultipartFile picture,
+            @RequestParam ("name") String name,
+            @RequestParam("price") BigDecimal price,
+            @RequestParam("account") int account,
+            @RequestParam("categoriaId") Long categoriaId ,
+            @PathVariable("id") Long id)  throws IOException {
+
+        Product product = new Product();
+        product.setName(name);
+        product.setPrice(price);
+        product.setAccount(account);
+        product.setPicture(Util.compressZLib(picture.getBytes()));
+
+        return productService.update(product, categoriaId, id);
+    }
+
 
 }

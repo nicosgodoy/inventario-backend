@@ -16,5 +16,7 @@ public interface IProductService {
 
     public ResponseEntity<ProductResponseRest> deleteById(Long id);
 
+    public ResponseEntity<ProductResponseRest> update(Product product,Long categoryId,Long id);
+
 
 }
