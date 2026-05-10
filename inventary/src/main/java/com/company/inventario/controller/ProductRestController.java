@@ -25,7 +25,7 @@ public class ProductRestController {
     }
 
     /**
-     *
+     * save product
      * @param picture
      * @param name
      * @param price
@@ -53,15 +53,36 @@ public class ProductRestController {
         return response;
     }
 
+    /**
+     * search product by id
+     * @param id
+     * @return
+     */
     @GetMapping("/products/{id}")
     public ResponseEntity<ProductResponseRest> searchById(@PathVariable("id") Long id) {
         ResponseEntity<ProductResponseRest> response = productService.searchById(id);
         return response;
     }
 
+    /**
+     * search product by name
+     * @param name
+     * @return
+     */
     @GetMapping("/products/filter/{name}")
     public ResponseEntity<ProductResponseRest> searchByName(@PathVariable("name") String name) {
         ResponseEntity<ProductResponseRest> response = productService.searchByName(name);
+        return response;
+    }
+
+    /**
+     * delete product by id
+     * @param id
+     * @return
+     */
+    @DeleteMapping("/products/{id}")
+    public ResponseEntity<ProductResponseRest> deleteById(@PathVariable("id") Long id) {
+        ResponseEntity<ProductResponseRest> response = productService.deleteById(id);
         return response;
     }
 
