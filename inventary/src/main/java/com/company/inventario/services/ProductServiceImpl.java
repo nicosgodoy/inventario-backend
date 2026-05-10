@@ -5,6 +5,8 @@ import com.company.inventario.repository.IProductRepository;
 import com.company.inventario.model.Category;
 import com.company.inventario.model.Product;
 import com.company.inventario.response.ProductResponseRest;
+import com.company.inventario.util.Util;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<ProductResponseRest> save(Product product, Long categoryId) {
         ProductResponseRest response = new ProductResponseRest();
         List<Product> list = new ArrayList<>();
@@ -51,6 +54,36 @@ public class ProductServiceImpl implements IProductService {
                 response.setMetadata("respuesta noOK","-1","Producto no guardado");
                 return new ResponseEntity<ProductResponseRest>(response, HttpStatus.BAD_REQUEST);
             }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            response.setMetadata("respuesta noOK","-1","Error al guardar el producto");
+            return new ResponseEntity<ProductResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+        return new ResponseEntity<ProductResponseRest>(response, HttpStatus.OK);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseEntity<ProductResponseRest> searchById(Long id) {
+        ProductResponseRest response = new ProductResponseRest();
+        List<Product> list = new ArrayList<>();
+
+        try{
+            //search category to set in the product object
+            Optional<Product>  product = productRepository.findById(id);
+
+            if(product.isPresent()){
+                byte[] imagenDescompresed = Util.decompressZLib(product.get().getPicture());
+               product.get().setPicture(imagenDescompresed);
+               list.add(product.get());
+               response.getProductResponse().setProducts(list);
+               response.setMetadata("respuesta OK","00","Producto encontrado");
+            }else {
+                response.setMetadata("respuesta noOK","-1","Producto encontrado");
+                return new ResponseEntity<ProductResponseRest>(response, HttpStatus.NOT_FOUND);
+            }
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
             response.setMetadata("respuesta noOK","-1","Error al guardar el producto");

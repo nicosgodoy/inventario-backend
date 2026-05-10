@@ -4,6 +4,7 @@ import com.company.inventario.model.Product;
 import com.company.inventario.response.ProductResponseRest;
 import com.company.inventario.services.IProductService;
 import com.company.inventario.util.Util;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,6 +50,12 @@ public class ProductRestController {
 
         ResponseEntity<ProductResponseRest> response= productService.save(product,categoriaId);
 
+        return response;
+    }
+
+    @GetMapping("/products/{id}")
+    public ResponseEntity<ProductResponseRest> searchById(@PathVariable("id") Long id) {
+        ResponseEntity<ProductResponseRest> response = productService.searchById(id);
         return response;
     }
 
