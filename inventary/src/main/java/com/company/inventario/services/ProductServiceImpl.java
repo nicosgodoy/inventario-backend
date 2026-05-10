@@ -80,13 +80,46 @@ public class ProductServiceImpl implements IProductService {
                response.getProductResponse().setProducts(list);
                response.setMetadata("respuesta OK","00","Producto encontrado");
             }else {
-                response.setMetadata("respuesta noOK","-1","Producto encontrado");
+                response.setMetadata("respuesta noOK","-1","Producto no encontrado");
                 return new ResponseEntity<ProductResponseRest>(response, HttpStatus.NOT_FOUND);
             }
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            response.setMetadata("respuesta noOK","-1","Error al guardar el producto");
+            response.setMetadata("respuesta noOK","-1","Error al buscar producto por el id");
+            return new ResponseEntity<ProductResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+        return new ResponseEntity<ProductResponseRest>(response, HttpStatus.OK);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ResponseEntity<ProductResponseRest> searchByName(String name) {
+        ProductResponseRest response = new ProductResponseRest();
+        List<Product> list = new ArrayList<>();
+        List<Product> listAux = new ArrayList<>();
+
+        try{
+            //search product by name
+            listAux= productRepository.findByNameContainingIgnoreCase(name);
+
+            if(!listAux.isEmpty()){
+                listAux.forEach(p -> {
+                    byte[] imagenDecompressed = Util.decompressZLib(p.getPicture());
+                    p.setPicture(imagenDecompressed);
+                    list.add(p);
+                });
+                response.getProductResponse().setProducts(list);
+                response.setMetadata("respuesta OK","00","Productos encontrados");
+            }else {
+                response.setMetadata("respuesta noOK","-1","Productos no encontrados por nombre");
+                return new ResponseEntity<ProductResponseRest>(response, HttpStatus.NOT_FOUND);
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            response.setMetadata("respuesta noOK","-1","Error al buscar producto por el nombre");
             return new ResponseEntity<ProductResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
