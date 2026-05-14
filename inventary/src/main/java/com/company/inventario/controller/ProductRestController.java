@@ -40,7 +40,7 @@ public class ProductRestController {
             @RequestParam ("name") String name,
             @RequestParam("price") BigDecimal price,
            @RequestParam("account") int account,
-           @RequestParam("categoriaId") Long categoriaId ) throws IOException {
+           @RequestParam("categoryId") Long categoriaId ) throws IOException {
 
         Product product = new Product();
         product.setName(name);
@@ -102,7 +102,7 @@ public class ProductRestController {
      * @param name
      * @param price
      * @param account
-     * @param categoriaId
+     * @param categoryId
      * @param id
      * @return
      * @throws IOException
@@ -113,7 +113,7 @@ public class ProductRestController {
             @RequestParam ("name") String name,
             @RequestParam("price") BigDecimal price,
             @RequestParam("account") int account,
-            @RequestParam("categoriaId") Long categoriaId ,
+            @RequestParam("categoryId") Long categoryId ,
             @PathVariable("id") Long id)  throws IOException {
 
         Product product = new Product();
@@ -122,7 +122,7 @@ public class ProductRestController {
         product.setAccount(account);
         product.setPicture(Util.compressZLib(picture.getBytes()));
 
-        return productService.update(product, categoriaId, id);
+        return productService.update(product, categoryId, id);
     }
 
 
